@@ -1,0 +1,20 @@
+CREATE UNIQUE INDEX PROD006.XORDERLINES  
+       ON PROD006.ORDERLINES              
+      (ORDER ASC                   
+      )                             
+       INCLUDE NULL KEYS            
+       NOT CLUSTER                  
+       DEFINE YES                   
+       COMPRESS NO                  
+       BUFFERPOOL BP0               
+       CLOSE NO                     
+       DEFER NO                     
+       COPY NO                      
+       USING STOGROUP DSN8G130      
+           PRIQTY -1                
+           SECQTY -1                
+           ERASE NO                 
+       FREEPAGE 0                   
+       PCTFREE 10                   
+       GBPCACHE CHANGED             
+       PIECESIZE 4194304K ;         

@@ -1,0 +1,1 @@
+grant sysadm to micto01, endja08, trode05

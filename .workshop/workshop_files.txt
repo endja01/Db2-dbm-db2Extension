@@ -1,0 +1,2 @@
+01_GetConnected/zoweProfile/zowe.config.json
+01_GetConnected/Instructions.md

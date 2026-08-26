@@ -1,0 +1,8 @@
+{
+    "zowe.settings.version": 2,
+    
+    "zowe.security.secureCredentialsEnabled": false,
+
+    "zowe.automaticProfileValidation": false
+
+}

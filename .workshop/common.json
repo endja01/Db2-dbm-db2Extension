@@ -1,0 +1,15 @@
+{
+    "CHE_URL" : "http://mfwsthree.broadcom.com/dashboard/",
+    "CHE_TERMINAL" : "zowe/cli",
+    "CHE_STACK" : "Workshop Stack",
+    "ZOSMF_PORT" : "1443",
+    "ZOSMF_BASE_PATH" : "api/zosmf",
+    "MAINFRAME_LPAR" : "R135",
+    "DB2_PROD_PROF" : "D13E",
+    "DB2_PROD_SSID" : "D13E",
+    "DB2_PROD_PORT" : "5001",
+    "DB2_PROD_LOC" : "D13EPTIB",
+    "DBM_DS_PORT"  : "7300",
+    "WS_DATE"      : "2025/06/08",
+    "WS_PLACE"     : "IDUG EMEA 2025"
+}

@@ -1,0 +1,131 @@
+                                                                                
+--============================================================================= 
+-- 20.0.20      CA-DB2   DROP RECOVERY Analysis Report      26/08/06 10:21      
+--============================================================================= 
+--Strategy Information:                                                         
+--Strategy ==> RECOVERY  Description  ===> DROP RECOVERY                        
+--Creator  ==> PROD001   Share Option ===> N (U,Y,N,X,L)  Src SSID ===> D13E    
+--                                                                              
+--                                                                              
+--Analysis Options:                                                             
+--  Execution Mode    ===> O (O - Online, B - Batch)                            
+--  Analysis Override ===> N                                                    
+--  Access Mode       ===> CATALOG - LIMITED                                    
+--  Model ID          ===> DEVOPS                                               
+--  Model Creator     ===> PROD001                                              
+--                                                                              
+--  Security          ===> N             Statistics   ===> N                    
+--  Data Statistics   ===> N             Check Data   ===> N                    
+--  No Set SQLID STMT ===> N             Image Copy   ===> N                    
+--  Truncate          ===> N             Bind/rebind  ===> N                    
+--  All Rows          ===> N             Reorg        ===> N                    
+--  Number Rows       ===>               Recover IX   ===> N                    
+--  Default SQLID     ===>                                                      
+--  Alias SQLID       ===>                                                      
+--  Drop & Re-create  ===> N                                                    
+--  Regenerate Views  ===> N                                                    
+--  MQT Refresh       ===> N                                                    
+--  Set Terminator    ===> ;                                                    
+--                                                                              
+--  No .AUTHS         ===> N             VSAM Defines  ===> N                   
+--  SQL Only          ===> N             VSAM Deletes  ===> N                   
+--  Commit ASAP       ===> N                                                    
+--                                                                              
+--  Delete Unload Data Sets   ===> N                                            
+--  Delete Temporary Datasets ===> N                                            
+--                                                                              
+--**********************************************************************        
+--*                           PRIMARY OBJECT                           *        
+--**********************************************************************        
+--                                                                              
+-- Legend:                                                                      
+--   Strategy Inclusion Reasons               Object Types                      
+--     A - Table is aux-Table to base-Table     SG - Stogroup                   
+--     B - Table is base-table to aux-Table     DB - Database                   
+--     C - Table is an RI child                 TS - Tablespace                 
+--     D - Index supports RI                    T  - Table                      
+--     F - Table adopted a new child Table      MQ - Mqt                        
+--     I - Table has Index activity             I  - Index                      
+--     L - LOB TS related to base-Table         SQ - Sequence                   
+--     M - Imploded to from child               UF - Function                   
+--     P - Primary Object                       PR - Procedure                  
+--     Q - Tablespace has a partitioned Table   V  - View                       
+--     R - Table is an RI parent                S  - Synonym                    
+--     S - Selected in the strategy             A  - Alias                      
+--     X - Exploded to from parent              TG - Trigger                    
+--     Z - Potential parent on target                                           
+--                                                                              
+--   Implode/Explode Analysis General format:                                   
+--   <Reason> <Object type> <Object name>                                       
+--                                                                              
+--************************* END ANALYSIS HEADER ************************        
+                                                                                
+.SYSTEM SQLDDL                                                                  
+.CONNECT D13E                                                                   
+                                                                                
+    ALTER TABLE DEV018.ORDERLINES                                               
+    DROP COLUMN ORDER_STATUS RESTRICT ;                                         
+.SYNC 5                                                                         
+    .CALL UTIL REORG PARM(D13E)                                                 
+    .DATA                                                                       
+TEMPLATE PTIUNLD                                                                
+         DSN      'PROD001.DBDEV18.TS01EX4.T6017.RUNL'                          
+         SPACE CYL                                                              
+                                                                                
+TEMPLATE PTIPUNCH                                                               
+         DSN      'PROD001.DBDEV18.TS01EX4.T6017.RPCH'                          
+         SPACE CYL                                                              
+                                                                                
+TEMPLATE PTICOPY                                                                
+         DSN      'PROD001.DBDEV18.TS01EX4.T6017.RSCP'                          
+         SPACE CYL                                                              
+                                                                                
+       REORG TABLESPACE DBDEV18.TS01EX4                                         
+         SHRLEVEL       CHANGE                                                  
+         DRAIN_WAIT     20                                                      
+         RETRY          10                                                      
+         RETRY_DELAY    60                                                      
+         MAXRO          18                                                      
+         DRAIN          WRITERS                                                 
+         LONGLOG        CONTINUE                                                
+         DELAY          1200                                                    
+         FASTSWITCH     YES                                                     
+         UNLOAD         CONTINUE                                                
+         KEEPDICTIONARY                                                         
+         UNLDDN         PTIUNLD                                                 
+         PUNCHDDN       PTIPUNCH                                                
+         SORTDEVT       SYSDA                                                   
+         COPYDDN        PTICOPY                                                 
+         STATISTICS                                                             
+           TABLE(ALL)                                                           
+           INDEX(ALL)                                                           
+           REPORT       NO                                                      
+           UPDATE       ALL                                                     
+           HISTORY      NONE                                                    
+           FORCEROLLUP  NO                                                      
+    .ENDDATA                                                                    
+                                                                                
+.SYNC 10                                                                        
+    .CALL LOADDEL                                                               
+    .DATA                                                                       
+      DSN(PROD001.DBDEV18.TS01EX4.T6017.RPCH)                                   
+    .ENDDATA                                                                    
+                                                                                
+.SYNC 15                                                                        
+                                                                                
+.AUTH                                                                           
+.DISCONN                                                                        
+                                                                                
+.SYNC 1020      'UTILITIES SECTION'                                             
+                                                                                
+-- **************************************************************               
+-- *                                                            *               
+-- * UTILITY STATEMENTS                                         *               
+-- *                                                            *               
+-- **************************************************************               
+                                                                                
+                                                                                
+                                                                                
+--==============================================================================
+-- 20.0.20        CA-DB2 RC/MIGRATOR IMPACT ANALYSIS      26/08/06 10:21        
+--==============================================================================

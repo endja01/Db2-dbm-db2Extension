@@ -1,0 +1,126 @@
+{
+    "$schema": "./zowe.schema.json",
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": ZOSMF_PORT,
+                        "rejectUnauthorized": false,
+                        "protocol": "https"
+                    }
+                },
+                "db2_d13e_prof": {
+                    "type": "db2",
+                    "properties": {
+                        "port": DB2_PROD_PORT,
+                        "database": "DB2_PROD_LOC"
+                    }
+                },
+                "dbm-db2": {
+                    "type": "dbm-db2",
+                    "properties": {
+                        "jobCards": [
+                            "//MAINFRAME_USERA JOB (106381000),'DB2 PROVISIONING',NOTIFY=&SYSUID,",
+                            "// CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),",
+                            "//     REGION=0M,TIME=NOLIMIT"
+                        ],
+                        "workDatasetPrefix": "MAINFRAME_USER.zowe.dbm",
+                        "authid": "MAINFRAME_USER",
+                        "sqlid": "MAINFRAME_USER",
+                        "port": 7300,
+                        "rejectUnauthorized": false,
+                        "protocol": "https",
+                        "environmentList": {
+                            "DB2_PROD_SSID": "127.0.0.1:8766"
+                        },
+                        "terminationCharacter": "$",
+                        "deleteWorkDatasets": true,
+                        "overwriteOutputFiles": false
+                    },
+                    "secure": []
+                },
+                "dbm-db2-dev": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "authid": "MAINFRAME_USER",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * YOUR_DEV_DB",
+                            "DBCR * MAINFRAME_USER",
+                            "TSCR * MAINFRAME_USER",
+                            "TBCR * MAINFRAME_USER"
+                        ],
+                        "deleteWorkDatasets": true,
+                        "description": "",
+                        "id": "MAINFRAME_USER",
+                        "jobCards": [],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "modification": "",
+                        "overwriteOutputFiles": false,
+                        "ruleSet": "prod001.d13etbl",
+                        "sqlid": "",
+                        "sourceDb2": "",
+                        "targetDb2": "",
+                        "terminationCharacter": "",
+                        "type": "create",
+                        "verify": "no",
+                        "workDatasetPrefix": ""
+                    },
+                    "secure": []
+                },
+                "dbm-db2-marble": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "authid": "MAINFRAME_USER",
+                        "changeSet": "",
+                        "changeSetValues": [
+                          "-- DDL changes for a table with dependent objects.",
+                          "-- Note: Replace CHANGEME with your database name.",
+                          "ALDB * YOUR_MBL_DB",
+                          "DBCR * MAINFRAME_USER",
+                          "TSCR * MAINFRAME_USER",
+                          "TBCR * MAINFRAME_USER",
+                          "IXCR * MAINFRAME_USER" 
+                        ],
+                        "deleteWorkDatasets": true,
+                        "description": "",
+                        "id": "MAINFRAME_USER",
+                        "jobCards": [],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "modification": "",
+                        "overwriteOutputFiles": false,
+                        "ruleSet": "prod001.d13etbl",
+                        "sqlid": "",
+                        "sourceDb2": "",
+                        "targetDb2": "",
+                        "terminationCharacter": "",
+                        "type": "create",
+                        "verify": "no",
+                        "workDatasetPrefix": ""
+                    },
+                    "secure": []
+                },
+                "global_base": {
+                    "type": "base",
+                    "properties": {
+                        "host": "MAINFRAME_HOST",
+                        "rejectUnauthorized": false, 
+                        "user": "MAINFRAME_USER",
+                        "password": "idug2025"
+                    },
+                    "secure": []
+                }
+            },
+            "defaults": {
+                "zosmf": "zosmf",
+                "db2": "db2_d13eE_prof",
+                "dbm-db2-options": "dbm-db2-options",
+                "dbm-db2": "dbm-db2",
+                "base": "global_base"
+            },
+            "autoStore": true
+}

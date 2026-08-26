@@ -1,0 +1,119 @@
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "a207": {
+            "type": "base",
+            "properties": {
+                "host": "10.208.48.125",
+                "rejectUnauthorized": false,
+                "user": "PROD020",
+                "password": "idug2026"
+            },
+            "secure": [],
+            "profiles": {
+                "zosmf_a207": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443,
+                        "rejectUnauthorized": false,
+                        "protocol": "https"
+                    },
+                    "secure": []
+                },
+                "db2-a207": {
+                    "type": "dbm-db2",
+                    "properties": {
+                        "jobCards": [
+                            "//${user}A JOB (106381000),'DB2 PROVISIONING',NOTIFY=&SYSUID,",
+                            "// CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),",
+                            "//    REGION=0M,TIME=NOLIMIT"
+                        ],
+                        "workDatasetPrefix": "${user}.dbmdb2",
+                        "deleteWorkDatasets": true,
+                        "overwriteOutputFiles": true,
+                        "protocol": "https",
+                        "authid": "${user}",
+                        "sqlid": "${user}",
+                        "port": 7300,
+                        "modification": "A207",
+                        "terminationCharacter": ";"
+                    },
+                    "secure": []
+                },
+                "dbm-a207-deva": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbintxx to dbdevxx a207",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbdevxx",
+                            "DBCR * endja01",
+                            "TSCR * endja01",
+                            "TBCR * dev0xx",
+                            "IXCR * dev0xx"
+                        ],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.prod001",
+                        "sqlid": "endja01",
+                        "type": "create"
+                    }
+                },
+                "dbm-a207-inta": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx to dbintxx a207",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbintxx",
+                            "DBCR * endja01",
+                            "TSCR * endja01",
+                            "TBCR * int0xx",
+                            "IXCR * int0xx"
+                        ],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.prod001",
+                        "sqlid": "endja01",
+                        "type": "create"
+                    }
+                },
+                "dbm-a207-dev": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbintxx to dbdevxx a207",
+                        "changeSet": "prod001.prod0a1",
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.prod001",
+                        "sqlid": "endja01",
+                        "type": "create"
+                    }
+                },
+                "dbm-a207-int": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx to dbintxx a207",
+                        "changeSet": "prod001.prod0a2",
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.prod001",
+                        "sqlid": "endja01",
+                        "type": "create"
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "zosmf_a207",
+        "dbm-db2-options": "a207.dbm-a207-cs",
+        "dbm-db2": "a207.db2-a207",
+        "base": "a207"
+    },
+    "autoStore": true
+}

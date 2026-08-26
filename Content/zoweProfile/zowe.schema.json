@@ -1,0 +1,630 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$version": "1.0",
+    "type": "object",
+    "description": "Zowe configuration",
+    "properties": {
+        "profiles": {
+            "type": "object",
+            "description": "Mapping of profile names to profile configurations",
+            "patternProperties": {
+                "^\\S*$": {
+                    "type": "object",
+                    "description": "Profile configuration object",
+                    "properties": {
+                        "type": {
+                            "description": "Profile type",
+                            "type": "string",
+                            "enum": [
+                                "zosmf",
+                                "tso",
+                                "ssh",
+                                "db2",
+                                "dbm-db2",
+                                "dbm-db2-options",
+                                "base"
+                            ]
+                        },
+                        "properties": {
+                            "description": "Profile properties object",
+                            "type": "object"
+                        },
+                        "profiles": {
+                            "description": "Optional subprofile configurations",
+                            "type": "object",
+                            "$ref": "#/properties/profiles"
+                        },
+                        "secure": {
+                            "description": "Secure property names",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "uniqueItems": true
+                        }
+                    },
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": false
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "title": "Missing profile type"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "zosmf"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "z/OSMF Profile",
+                                        "description": "z/OSMF Profile",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "The z/OSMF server host name."
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "The z/OSMF server port.",
+                                                "default": 443
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login."
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password."
+                                            },
+                                            "rejectUnauthorized": {
+                                                "type": "boolean",
+                                                "description": "Reject self-signed certificates.",
+                                                "default": true
+                                            },
+                                            "certFile": {
+                                                "type": "string",
+                                                "description": "The file path to a certificate file to use for authentication"
+                                            },
+                                            "certKeyFile": {
+                                                "type": "string",
+                                                "description": "The file path to a certificate key file to use for authentication"
+                                            },
+                                            "basePath": {
+                                                "type": "string",
+                                                "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer."
+                                            },
+                                            "protocol": {
+                                                "type": "string",
+                                                "description": "The protocol used (HTTP or HTTPS)",
+                                                "default": "https",
+                                                "enum": [
+                                                    "http",
+                                                    "https"
+                                                ]
+                                            },
+                                            "encoding": {
+                                                "type": "string",
+                                                "description": "The encoding for download and upload of z/OS data set and USS files. The default encoding if not specified is IBM-1047."
+                                            },
+                                            "responseTimeout": {
+                                                "type": "number",
+                                                "description": "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response. Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "tso"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "TSO Profile",
+                                        "description": "z/OS TSO/E User Profile",
+                                        "properties": {
+                                            "account": {
+                                                "type": "string",
+                                                "description": "Your z/OS TSO/E accounting information."
+                                            },
+                                            "characterSet": {
+                                                "type": "string",
+                                                "description": "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
+                                                "default": "697"
+                                            },
+                                            "codePage": {
+                                                "type": "string",
+                                                "description": "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
+                                                "default": "1047"
+                                            },
+                                            "columns": {
+                                                "type": "number",
+                                                "description": "The number of columns on a screen.",
+                                                "default": 80
+                                            },
+                                            "logonProcedure": {
+                                                "type": "string",
+                                                "description": "The logon procedure to use when creating TSO procedures on your behalf.",
+                                                "default": "IZUFPROC"
+                                            },
+                                            "regionSize": {
+                                                "type": "number",
+                                                "description": "Region size for the TSO/E address space.",
+                                                "default": 4096
+                                            },
+                                            "rows": {
+                                                "type": "number",
+                                                "description": "The number of rows on a screen.",
+                                                "default": 24
+                                            }
+                                        },
+                                        "required": []
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "ssh"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "z/OS SSH Profile",
+                                        "description": "z/OS SSH Profile",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "The z/OS SSH server host name."
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "The z/OS SSH server port.",
+                                                "default": 22
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "Mainframe user name, which can be the same as your TSO login."
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "Mainframe password, which can be the same as your TSO password."
+                                            },
+                                            "privateKey": {
+                                                "type": "string",
+                                                "description": "Path to a file containing your private key, that must match a public key stored in the server for authentication"
+                                            },
+                                            "keyPassphrase": {
+                                                "type": "string",
+                                                "description": "Private key passphrase, which unlocks the private key."
+                                            },
+                                            "handshakeTimeout": {
+                                                "type": "number",
+                                                "description": "How long in milliseconds to wait for the SSH handshake to complete."
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password",
+                                                "keyPassphrase"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "db2"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "Db2 Profile",
+                                        "description": "A profile for interaction with Db2 for the z/OS region",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "The Db2 server host name"
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "The Db2 server port number"
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "The Db2 user ID (may be the same as the TSO login)"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "The Db2 password (may be the same as the TSO password)"
+                                            },
+                                            "database": {
+                                                "type": "string",
+                                                "description": "The name of the database"
+                                            },
+                                            "sslFile": {
+                                                "type": "string",
+                                                "description": "Path to an SSL Certificate file"
+                                            }
+                                        }
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "dbm-db2"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "DBM-Db2 Connection Profile",
+                                        "description": "The DBM-Db2 profile is a named set of DBM Data Service parameters that are implicitly used with the zowe dbm-db2 commands. The profile includes server connection, z/OS execution, and user-dependent details.",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "Specifies the DBM Data Service REST API server host name or TCP/IP address to use."
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "Specifies the DBM Data Service REST API server TCP/IP port number.",
+                                                "default": 7300
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "Specifies the mainframe user name that you want to use to connect to the mainframe systems during execution of the Zowe CLI commands. This user name can be the same as your TSO login ID."
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "Specifies the mainframe password for the user name that is used to connect to the mainframe systems during execution of the CLI commands. This password can be the same as your TSO password."
+                                            },
+                                            "protocol": {
+                                                "type": "string",
+                                                "description": "Specifies the communication protocol between zowe dbm-db2 client and DBM Data Service.",
+                                                "default": "https",
+                                                "enum": [
+                                                    "http",
+                                                    "https"
+                                                ]
+                                            },
+                                            "rejectUnauthorized": {
+                                                "type": "boolean",
+                                                "description": "Determines whether the dbm-db2 command is accepted or rejected when a self-signed certificate is returned by the DBM Data Service.",
+                                                "default": true
+                                            },
+                                            "environmentList": {
+                                                "type": "object",
+                                                "description": "Specifies a string of one or more entries consisting of a Db2 subsystem ID and a DBM Data Service REST API server host name or TCP/IP address. Use a comma to separate entries. The same Db2 subsystem can be used in multiple DBM Data Service environments. For more information about configuring the DBM Data Service, see the Database Management Solutions for Db2 for z/OS documentation at https://techdocs.broadcom.com/db2mgmt",
+                                                "default": {
+                                                    "ssid1": "env1@host1:port1",
+                                                    "ssid2": "env2@host2:port2"
+                                                }
+                                            },
+                                            "jobCards": {
+                                                "type": "array",
+                                                "description": "Specifies a string array of z/OS JCL JOB statements.",
+                                                "default": [
+                                                    "//DB2DVOPS JOB CLASS=A,",
+                                                    "//         MSGCLASS=X"
+                                                ]
+                                            },
+                                            "workDatasetPrefix": {
+                                                "type": "string",
+                                                "description": "Specifies the prefix (high-level qualifier) in z/OS work data set names.",
+                                                "default": "${user}.dbmdb2"
+                                            },
+                                            "deleteWorkDatasets": {
+                                                "type": "boolean",
+                                                "description": "Specifies whether to delete work data sets on a mainframe after the request is fulfilled.",
+                                                "default": true
+                                            },
+                                            "overwriteOutputFiles": {
+                                                "type": "boolean",
+                                                "description": "Specifies whether to overwrite output files if they exist.",
+                                                "default": false
+                                            },
+                                            "authid": {
+                                                "type": "string",
+                                                "description": "Specifies the primary Db2 authorization ID that is used to establish a connection between Db2 and a process.",
+                                                "default": "${user}"
+                                            },
+                                            "sqlid": {
+                                                "type": "string",
+                                                "description": "Specifies the authorization ID that is used in generated SET CURRENT SQLID statements.",
+                                                "default": "${user}"
+                                            },
+                                            "terminationCharacter": {
+                                                "type": "string",
+                                                "description": "Specifies the SQL termination character to use in DDL generation when the default termination character conflicts with the SQL statements that are used in triggers, XML indexes, and routines (external SQL functions and native SQL stored procedures). The default termination character is a semi-colon (;). You cannot specify a comma, double quote, single quote, left or right parentheses, or an underscore.",
+                                                "default": ";"
+                                            },
+                                            "basePath": {
+                                                "type": "string",
+                                                "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all DBM DS resources when making REST requests. Do not specify this option if you are not using an API mediation layer."
+                                            }
+                                        }
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "dbm-db2-options"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "DBM-Db2 Options Profile",
+                                        "description": "The DBM-Db2 options profile is a named set of DBM Data Service parameters that are implicitly used with the zowe dbm-db2 commands. The profile includes execution-dependent details.",
+                                        "properties": {
+                                            "authid": {
+                                                "type": "string",
+                                                "description": "Specifies the primary Db2 authorization ID that is used to establish a connection between Db2 and a process."
+                                            },
+                                            "changeSet": {
+                                                "type": "string",
+                                                "description": "Specifies the creator and name of an existing RC/Migrator global change set that changes Db2 objects during a command execution.\n\n Format:\n \n<change-set-creator.change-set-name> \n\nFor more information about global change services, see the RC/Migrator documentation at https://techdocs.broadcom.com/db2rcmig\n \nNote: If change-set and change-set-file are both specified, specifications in change-set-file take precedence. "
+                                            },
+                                            "changeSetValues": {
+                                                "type": "array",
+                                                "description": "Specifies the global change specifications that modify Db2 object attributes during a command execution.\n\n Format:\n \n<object-attribute> <from-value> <to-value>\n    \nThe <object-attribute> consists of four characters. The first two characters identify the object type. The last two characters identify the specific attribute. Wildcard characters are supported in the <from-value> and <to-value>. The first occurrence in multiple specifications for the same <object-attribute> has the highest precedence.\n   \nFor a list of global change set attributes, see the RC/Migrator documentation at https://techdocs.broadcom.com/db2rcmig\n \nExample:\n    \nThe following example demonstrates changes to the table schema (creator) and tablespace names:\n     \nTBCR TEST% PROD%\nTBTS TESTTS% PRODTS%\n\nNote:\n- If change-set and change-set-file are both specified, specifications in change-set-file take precedence.\n- The changeSetValues options-profile option has the same behavior as the change-set-file command option. "
+                                            },
+                                            "deleteWorkDatasets": {
+                                                "type": "boolean",
+                                                "description": "Specifies whether to delete work data sets on a mainframe after the request is fulfilled."
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "description": "Specifies a 1- to 25-character description for the RC/Migrator compare strategy."
+                                            },
+                                            "id": {
+                                                "type": "string",
+                                                "description": "Specifies the 1- to 8-character name of the RC/Migrator compare strategy that is created on the target Db2 subsystem during a command execution.\n \n Format: The name must begin with a non-numeric character and contain the following characters only: uppercase letters from A to Z, numbers from 0 to 9, and special characters $, #, and @. "
+                                            },
+                                            "jobCards": {
+                                                "type": "array",
+                                                "description": "Specifies a string array of z/OS JCL JOB statements."
+                                            },
+                                            "matchSet": {
+                                                "type": "string",
+                                                "description": "Specifies the creator and name of an existing RC/Migrator automapping mask set. Matching is used to pair objects in a DDL file to objects that are defined on a Db2 subsystem. Matching determines whether the 'change-set' or 'rule-set' options are applied.\n\n Format:\n\n<match-set-creator.match-set-name>\n\nFor more information about mask services, see the RC/Migrator documentation at https://techdocs.broadcom.com/db2rcmig\n\nNote: If --match-set and --match-set-file are both specified, specifications in match-set-file take precedence. "
+                                            },
+                                            "matchSetValues": {
+                                                "type": "array",
+                                                "description": "Specifies the mapping mask specifications. Matching is used to pair objects in a DDL file to objects that are defined on a Db2 subsystem. For example, a mask specification can account for different schema naming patterns across environments. Matching determines whether the 'change-set' or 'rule-set' options are applied.\n                    \n Format:\n\n<object-type> <source-name-mask> <target-name-mask>;\n\nSTOGROUP <name> <name>\nDATABASE <name> <name>\nTABLESPACE <database.name> <database.name>\nTABLE <schema.name> <schema.name>\nINDEX <schema.name> <schema.name>\nVIEW <schema.name> <schema.name>\nSYNONYM <schema.name> <schema.name>\nALIAS <schema.name> <schema.name>\nTRIGGER <schema.name> <schema.name>\nSEQUENCE <schema.name> <schema.name>\nFUNCTION <schema.name[.version]> <schema.name[.version]>\nPROCEDURE <schema.name[.version]> <schema.name[.version]>\n                        \nNote:\n- <name> must be between 1 and 128 characters. For DATABASE and TABLESPACE, <name> must be between 1 and 8 characters.\n- <schema> must be between 1 and 128 characters.\n- <version> must be between 1 and 64 characters.\n                    \nA mask specification can include the following wildcard characters:\n                    \nPercent sign (%) indicates that zero or more characters can occupy that position and all remaining positions to the end of the name, or to the next character. The percent sign can be used anywhere in the name. However, the source and target characters must match exactly.\n \nHyphen or dash (-) indicates that any character can occupy that position, but a character must exist at that position, and the source and target character must match exactly. The hyphen can be repeated in several places in the name.\n \nAsterisk (*) indicates matching values. An asterisk cannot be used with other characters.\n                    \nUse a semicolon to separate mask specifications. Multiple mask specifications for the same object type are supported.\n\nExample:\n \nThe following example demonstrates different ways of matching the table MYNAME.MYTABLE to the table YOURNAME.YOURTABLE:\n \nTABLE MY%.%TABLE YOUR%.%TABLE; \nTABLE MYN-M-.MYT% YOURN-M-.YOURT%;\nTABLE MYNAME.MYTABLE YOURNAME.YOURTABLE; \nTABLE *.MYTABLE *.YOURTABLE;\n\nFor a list of mask specifications, see the RC/Migrator documentation at https://techdocs.broadcom.com/db2rcmig\n \nNote:\n- If --match-set and --match-set-file are both specified, specifications in match-set-file take precedence.\n- The matchSetValues options-profile option has the same behavior as the match-set-file command option. "
+                                            },
+                                            "modification": {
+                                                "type": "string",
+                                                "description": "Specifies a named set of server-managed default parameter values that control the execution behavior of the zowe dbm-db2 commands. For example, you can use a modification to identify a set of default values that differ from the current set of default values.\n   \n For more information about using the modification option, see the DBM Data Service documentation at https://techdocs.broadcom.com/db2mgmt "
+                                            },
+                                            "overwriteOutputFiles": {
+                                                "type": "boolean",
+                                                "description": "Specifies whether to overwrite output files if they exist."
+                                            },
+                                            "ruleSet": {
+                                                "type": "string",
+                                                "description": "Specifies the creator and name of an existing RC/Migrator rule set that overrides Db2 object attributes in the target Db2 subsystem with the corresponding values from the input DDL file. The changes only apply to existing objects, as determined by match-set processing.\n\n Format:\n\n<rule-set-creator.rule-set-name>\n         \nFor more information about rule database services, see the RC/Migrator documentation at https://techdocs.broadcom.com/db2rcmig "
+                                            },
+                                            "sqlid": {
+                                                "type": "string",
+                                                "description": "Specifies the authorization ID that is used in generated SET CURRENT SQLID statements."
+                                            },
+                                            "sourceDb2": {
+                                                "type": "string",
+                                                "description": "Specifies the source Db2 subsystem or data sharing group where the objects that you want to use in a command are located.\n \n  Note: If you specify the data sharing group, the first active Db2 subsystem in the group is used. "
+                                            },
+                                            "targetDb2": {
+                                                "type": "string",
+                                                "description": "Specifies the target Db2 subsystem or data sharing group where you want to use a command.\n \n  Note: If you specify the data sharing group, the first active Db2 subsystem in the group is used. "
+                                            },
+                                            "terminationCharacter": {
+                                                "type": "string",
+                                                "description": "Specifies the SQL termination character to use in DDL generation when the default termination character conflicts with the SQL statements that are used in triggers, XML indexes, and routines (external SQL functions and native SQL stored procedures). The default termination character is a semi-colon (;). You cannot specify a comma, double quote, single quote, left or right parentheses, or an underscore."
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "description": "Specifies the type of DDL statements that you want to generate. You can generate CREATE or DROP statements.",
+                                                "enum": [
+                                                    "drop",
+                                                    "create"
+                                                ]
+                                            },
+                                            "verify": {
+                                                "type": "string",
+                                                "description": "Specifies whether to verify that the objects to be created do not exist on the Db2 subsystem and that the related objects that are required for successful creation of the objects exist on the Db2 subsystem or in the input DDL.\n \n Default value: no ",
+                                                "enum": [
+                                                    "yes",
+                                                    "no"
+                                                ]
+                                            },
+                                            "workDatasetPrefix": {
+                                                "type": "string",
+                                                "description": "Specifies the prefix (high-level qualifier) in z/OS work data set names."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "base"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "Base Profile",
+                                        "description": "Base profile that stores values shared by multiple service profiles",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "Host name of service on the mainframe."
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "Port number of service on the mainframe."
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "User name to authenticate to service on the mainframe."
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "Password to authenticate to service on the mainframe."
+                                            },
+                                            "rejectUnauthorized": {
+                                                "type": "boolean",
+                                                "description": "Reject self-signed certificates.",
+                                                "default": true
+                                            },
+                                            "tokenType": {
+                                                "type": "string",
+                                                "description": "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by 'zowe auth login'."
+                                            },
+                                            "tokenValue": {
+                                                "type": "string",
+                                                "description": "The value of the token to pass to the API."
+                                            },
+                                            "certFile": {
+                                                "type": "string",
+                                                "description": "The file path to a certificate file to use for authentication.\n\nNote: The CLI does not support certificate files that require a password. For more information, search Troubleshooting PEM Certificates in Zowe Docs."
+                                            },
+                                            "certKeyFile": {
+                                                "type": "string",
+                                                "description": "The file path to a certificate key file to use for authentication"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password",
+                                                "tokenValue"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "defaults": {
+            "type": "object",
+            "description": "Mapping of profile types to default profile names",
+            "properties": {
+                "zosmf": {
+                    "description": "Default zosmf profile",
+                    "type": "string"
+                },
+                "tso": {
+                    "description": "Default tso profile",
+                    "type": "string"
+                },
+                "ssh": {
+                    "description": "Default ssh profile",
+                    "type": "string"
+                },
+                "db2": {
+                    "description": "Default db2 profile",
+                    "type": "string"
+                },
+                "dbm-db2": {
+                    "description": "Default dbm-db2 profile",
+                    "type": "string"
+                },
+                "dbm-db2-options": {
+                    "description": "Default dbm-db2-options profile",
+                    "type": "string"
+                },
+                "base": {
+                    "description": "Default base profile",
+                    "type": "string"
+                }
+            }
+        },
+        "autoStore": {
+            "type": "boolean",
+            "description": "If true, values you enter when prompted are stored for future use"
+        }
+    }
+}

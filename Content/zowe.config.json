@@ -1,0 +1,267 @@
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "svw": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": false,
+                "host": "mstrsvw.lvn.broadcom.net"
+            },
+            "secure": [
+                "user",
+                "password"
+            ],
+            "profiles": {
+                "zosmf_svw": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 449,
+                        "protocol": "https"
+                    }
+                },
+                "db2-svw": {
+                    "type": "dbm-db2",
+                    "properties": {
+                        "port": 49153,
+                        "jobCards": [
+                            "//${user}U JOB (41000000),'DB2 PROVISIONING',NOTIFY=&SYSUID,",
+                            "// CLASS=A,MSGCLASS=X,",
+                            "//    REGION=0M,TIME=NOLIMIT"
+                        ],
+                        "workDatasetPrefix": "${user}.dbmdb2",
+                        "deleteWorkDatasets": true,
+                        "overwriteOutputFiles": false,
+                        "authid": "${user}",
+                        "sqlid": "${user}",
+                        "terminationCharacter": ";"
+                    }
+                },
+                "dbm-svw": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx svw",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbdev06",
+                            "DBCR * prod006",
+                            "TSCR * prod006",
+                            "TBCR * prod006",
+                            "IXCR * prod006"
+                        ],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "ruleSet": "",
+                        "sqlid": "endja01",
+                        "type": "create"
+                    }
+                }
+            }
+        },
+        "r135": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": false,
+                "host": "r135.msd.labs.broadcom.net"
+            },
+            "secure": [
+                "user",
+                "password"
+            ],
+            "profiles": {
+                "tso_r135": {
+                    "type": "tso",
+                    "properties": {
+                        "account": "",
+                        "codePage": "1047",
+                        "logonProcedure": "IZUFPROC"
+                    }
+                },
+                "ssh_r135": {
+                    "type": "ssh",
+                    "properties": {
+                        "port": 22
+                    }
+                },
+                "zosmf_r135": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443,
+                        "protocol": "https"
+                    }
+                },
+                "db2-r135": {
+                    "type": "dbm-db2",
+                    "properties": {
+                        "port": 7300,
+                        "jobCards": [
+                            "//${user}A JOB (106381000),'DB2 PROVISIONING',NOTIFY=&SYSUID,",
+                            "// CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),",
+                            "//    REGION=0M,TIME=NOLIMIT"
+                        ],
+                        "workDatasetPrefix": "${user}.dbmdb2",
+                        "deleteWorkDatasets": true,
+                        "overwriteOutputFiles": false,
+                        "authid": "${user}",
+                        "sqlid": "${user}",
+                        "terminationCharacter": ";"
+                    }
+                },
+                "dbm-marble": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "authid": "prod006",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbevnt06",
+                            "DBCR * prod006",
+                            "TSCR * prod006",
+                            "TBCR * prod006",
+                            "IXCR * prod006"
+                        ],
+                        "description": "",
+                        "id": "prod006",
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.d13etbl",
+                        "sqlid": "",
+                        "type": "create",
+                        "verify": "no"
+                    }
+                },
+                "dbm-end": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "end8d13a",
+                        "changeSet": "prod001.dsnend",
+                        "changeSetValues": [],
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.d13etbl",
+                        "type": "create"
+                    }
+                },
+                "dbm-dev": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbdev06",
+                            "DBCR * prod006",
+                            "TSCR * prod006",
+                            "TBCR * prod006",
+                            "IXCR * prod006"
+                        ],
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.d13etbl",
+                        "sqlid": "prod006",
+                        "type": "create"
+                    }
+                },
+                "dbm-r135-dev": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx",
+                        "changeSet": "prod001.prod001",
+                        "changeSetValues": [],
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.d13etbl",
+                        "type": "create",
+                        "workDatasetPrefix": "endja01.${user}",
+                        "modification": "R135"
+                    }
+                }
+            }
+        },
+        "a207": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": false,
+                "host": "a207.msd.labs.broadcom.net",
+                "port": 7554,
+                "tokenType": "apimlAuthenticationToken"
+            },
+            "secure": [
+                "tokenValue"
+            ],
+            "profiles": {
+                "zosmf_a207": {
+                    "type": "zosmf",
+                    "properties": {
+                        "basePath": "/ibmzosmf/api/v1",
+                        "authOrder": "token, bearer"
+                    },
+                    "secure": []
+                },
+                "db2-a207": {
+                    "type": "dbm-db2",
+                    "properties": {
+                        "jobCards": [
+                            "//${user}A JOB (106381000),'DB2 PROVISIONING',NOTIFY=&SYSUID,",
+                            "// CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),",
+                            "//    REGION=0M,TIME=NOLIMIT"
+                        ],
+                        "workDatasetPrefix": "${user}.dbmdb2",
+                        "deleteWorkDatasets": true,
+                        "overwriteOutputFiles": true,
+                        "authid": "${user}",
+                        "sqlid": "${user}",
+                        "modification": "A207",
+                        "terminationCharacter": ";",
+                        "basePath": "/bcmdbmds/api/v1"
+                    },
+                    "secure": []
+                },
+                "dbm-a207": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx a207",
+                        "changeSet": "",
+                        "changeSetValues": [
+                            "-- DDL changes for a table with dependent objects.",
+                            "-- Note: Replace CHANGEME with your database name.",
+                            "ALDB * dbdev20",
+                            "DBCR * prod001",
+                            "TSCR * prod001",
+                            "TBCR * dbdev020"
+                        ],
+                        "matchSet": "",
+                        "matchSetValues": [],
+                        "ruleSet": "",
+                        "sqlid": "prod001",
+                        "type": "create"
+                    }
+                },
+                "dbm-a207-cs": {
+                    "type": "dbm-db2-options",
+                    "properties": {
+                        "description": "dbdevxx a207",
+                        "changeSet": "prod001.prod0a1",
+                        "matchSet": "prod001.@default",
+                        "matchSetValues": [],
+                        "ruleSet": "prod001.prod001",
+                        "sqlid": "prod001",
+                        "type": "create"
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "a207.zosmf_a207",
+        "tso": "r135.tso_r135",
+        "ssh": "r135.ssh_r135",
+        "dbm-db2-options": "a207.dbm-a207-cs",
+        "dbm-db2": "a207.db2-a207",
+        "base": "a207"
+    },
+    "autoStore": true
+}
