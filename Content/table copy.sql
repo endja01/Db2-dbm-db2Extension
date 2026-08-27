@@ -1,3 +1,0 @@
-SELECT * from DSN81310.DEPT ; 
-
- 
