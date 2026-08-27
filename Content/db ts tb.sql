@@ -26,3 +26,4 @@ SELECT SUBSTR ( NAME , 1 , 18) AS IXNAME
   WHERE CREATOR = 'DEV016'                         
     AND NAME = 'ORDERLINES_IX1'                       
   ORDER BY NAME , CREATOR WITH CS  
+;
